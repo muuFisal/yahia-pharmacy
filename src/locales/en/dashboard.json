@@ -1,0 +1,30 @@
+{
+  "title": "Admin Dashboard",
+  "welcome": "Welcome",
+  "welcomeSubtitle": "Here is your system overview and key performance indicators.",
+  "nav": {
+    "overview": "Overview",
+    "viewSite": "Visit Public Website"
+  },
+  "login": {
+    "title": "Administrator Login",
+    "subtitle": "Central Management Panel",
+    "email": "Email Address",
+    "password": "Password",
+    "submit": "Enter Dashboard",
+    "success": "Welcome to the dashboard",
+    "failed": "Sign in failed, please check email and password"
+  },
+  "stats": {
+    "users": "Total Users",
+    "visits": "Daily Visits",
+    "activeSessions": "Active Sessions",
+    "conversion": "Conversion Rate",
+    "vsLastMonth": "vs last month"
+  },
+  "overview": {
+    "sectionTitle": "Recent Activity",
+    "readyMessage": "The dashboard is ready for your modules",
+    "readyDesc": "You can easily plug in data tables, analytics charts, and expand management sections."
+  }
+}

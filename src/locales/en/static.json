@@ -1,0 +1,20 @@
+{
+  "about": {
+    "title": "About Project",
+    "subtitle": "An advanced starter template and professional design for web applications with React and Tailwind CSS.",
+    "heading": "What does this template offer?",
+    "text1": "This project is built to serve as a solid base for any new application, with clean separation between website and dashboard pages, CSS variable-based design system, dark/light theme support, and full internationalization."
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "We are always happy to answer your questions and hear your feedback.",
+    "name": "Name",
+    "namePlaceholder": "Enter your full name",
+    "email": "Email Address",
+    "emailPlaceholder": "example@mail.com",
+    "message": "Message",
+    "messagePlaceholder": "Write your inquiry or message here...",
+    "submit": "Send Message",
+    "success": "Your message has been sent successfully!"
+  }
+}

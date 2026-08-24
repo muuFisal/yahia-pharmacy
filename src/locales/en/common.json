@@ -1,0 +1,29 @@
+{
+  "appName": "My App",
+  "loading": "Loading...",
+  "errorOccurred": "An unexpected error occurred",
+  "tryAgainLater": "Please try again later",
+  "retry": "Retry",
+  "retrying": "Retrying...",
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "contact": "Contact Us"
+  },
+  "toast": {
+    "loginRequired": "Please log in first to continue"
+  },
+  "forbidden": {
+    "title": "Access Forbidden",
+    "desc": "Sorry, you don't have sufficient permissions to access this page.",
+    "backToDashboard": "Back to Dashboard"
+  },
+  "errors": {
+    "notFound": {
+      "code": "404",
+      "title": "Page Not Found",
+      "subtitle": "Sorry, the page you are looking for does not exist or has been moved.",
+      "backButton": "Back to Home"
+    }
+  }
+}

@@ -1,0 +1,449 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Dynamic Font Swapping Variables */
+  --font-primary-family: "Cairo", sans-serif;
+  --font-secondary-family: "Inter", sans-serif;
+
+  /* Fonts mapped in Tailwind Config */
+  --font-primary: var(--font-primary-family);
+  --font-secondary: var(--font-secondary-family);
+
+  /* Colors (Light Mode) */
+  --color-primary: #3525cd;
+  --color-primary-container: #4f46e5;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #dad7ff;
+  --color-secondary: #855300;
+  --color-secondary-container: #fea619;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #684000;
+  --color-tertiary: #7e3000;
+  --color-tertiary-container: #a44100;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #ffd2be;
+  --color-background: #fcf8ff;
+  --color-on-background: #1b1b24;
+  --color-surface: #fcf8ff;
+  --color-on-surface: #1b1b24;
+  --color-surface-variant: #e4e1ee;
+  --color-on-surface-variant: #464555;
+  --color-outline: #777587;
+  --color-outline-variant: #c7c4d8;
+  --color-surface-dim: #dcd8e5;
+  --color-surface-bright: #fcf8ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f5f2ff;
+  --color-surface-container: #f0ecf9;
+  --color-surface-container-high: #eae6f4;
+  --color-surface-container-highest: #e4e1ee;
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* Spacing */
+  --spacing-margin-mobile: 16px;
+  --spacing-margin-desktop: 32px;
+  --spacing-sidebar-width: 280px;
+  --spacing-gutter: 24px;
+  --spacing-unit: 8px;
+  --spacing-container-max: 1280px;
+
+  /* Border Radii */
+  --radius-default: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1.5rem;
+}
+
+/* Dark Mode Colors */
+.dark {
+  --color-primary: #c3c0ff;
+  --color-primary-container: #4d44e3;
+  --color-on-primary: #1d00a5;
+  --color-on-primary-container: #dad7ff;
+  --color-secondary: #ffb95f;
+  --color-secondary-container: #855300;
+  --color-on-secondary: #2a1700;
+  --color-on-secondary-container: #ffddb8;
+  --color-tertiary: #ffb695;
+  --color-tertiary-container: #7e3000;
+  --color-on-tertiary: #351000;
+  --color-on-tertiary-container: #ffdbcc;
+  --color-background: #0f172a;
+  --color-on-background: #f8fafc;
+  --color-surface: #1e293b;
+  --color-on-surface: #f8fafc;
+  --color-surface-variant: #334155;
+  --color-on-surface-variant: #94a3b8;
+  --color-outline: #64748b;
+  --color-outline-variant: #475569;
+  --color-surface-dim: #0f172a;
+  --color-surface-bright: #1e293b;
+  --color-surface-container-lowest: #0b0f19;
+  --color-surface-container-low: #131e32;
+  --color-surface-container: #1e293b;
+  --color-surface-container-high: #334155;
+  --color-surface-container-highest: #475569;
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+}
+
+html,
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-secondary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#root {
+  width: 100%;
+  max-width: 100vw;
+}
+
+/* Prevent horizontal overflow on mobile by clipping main content container */
+main {
+  overflow-x: clip;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-primary);
+}
+
+/* Bi-directional line-height adjustments for Arabic readability */
+[dir="rtl"] {
+  line-height: 1.7;
+}
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3 {
+  line-height: 1.35;
+}
+
+/* Glassmorphism Cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glass-card {
+  background: rgba(30, 41, 59, 0.8);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Helper utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Typography styles matching Stitch definitions */
+.font-display-lg {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .font-display-lg {
+    font-size: 36px;
+  }
+}
+
+.font-headline-xl {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.font-headline-md {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.font-body-lg {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.font-body-md {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.font-label-md {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+
+.font-caption {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* Shimmer Button Flash/Sweep Animation */
+@keyframes shine-sweep {
+  0% {
+    left: -100%;
+  }
+  15%, 100% {
+    left: 200%;
+  }
+}
+
+.shimmer-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg);
+  animation: shine-sweep 4.5s infinite ease-in-out;
+  pointer-events: none;
+}
+
+.dark .shimmer-button::after {
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* Glow Pulse Animation */
+@keyframes button-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(53, 37, 205, 0.2), 0 10px 15px -3px rgba(53, 37, 205, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(53, 37, 205, 0.45), 0 10px 20px -3px rgba(53, 37, 205, 0.25);
+  }
+}
+
+.glow-pulse-button {
+  animation: button-glow-pulse 3.5s infinite ease-in-out;
+}
+
+.dark .glow-pulse-button {
+  animation: button-glow-pulse-dark 3.5s infinite ease-in-out;
+}
+
+@keyframes button-glow-pulse-dark {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(195, 192, 255, 0.1), 0 10px 15px -3px rgba(195, 192, 255, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(195, 192, 255, 0.3), 0 10px 20px -3px rgba(195, 192, 255, 0.15);
+  }
+}
+
+/* Staggered Fade In Up for Promo Cards */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Reusable Utility classes */
+.icon-fill {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Custom premium overlay scrollbars to eliminate default light backgrounds */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.45);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.18);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.35);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Announcement Bar Marquee Animations */
+@keyframes marquee-rtl {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes marquee-ltr {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee-rtl {
+  animation: marquee-rtl 28s linear infinite;
+}
+
+.animate-marquee-ltr {
+  animation: marquee-ltr 28s linear infinite;
+}
+
+/* Pause marquee on hover for readability */
+.announcement-marquee:hover .animate-marquee-rtl,
+.announcement-marquee:hover .animate-marquee-ltr {
+  animation-play-state: paused;
+}
+
+/* Hero mobile text shadow for readability */
+.hero-text-shadow {
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.12), 0 0 2px rgba(0, 0, 0, 0.06);
+}
+
+.dark .hero-text-shadow {
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4), 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Rounding corners of children in floating header when scrolled */
+.scrolled-floating-header > div:first-of-type {
+  border-top-left-radius: 1rem; /* 16px - rounded-2xl */
+  border-top-right-radius: 1rem;
+  overflow: hidden; /* Clips the marquee banner content inside the corners */
+}
+
+.scrolled-floating-header header {
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+/* Fix Tailwind color opacity variables in dark mode */
+.dark .border-outline-variant\/10 {
+  border-color: rgba(71, 85, 105, 0.15);
+}
+.dark .border-x-outline-variant\/10 {
+  border-color: rgba(71, 85, 105, 0.15);
+}
+.dark .border-b-outline-variant\/10 {
+  border-color: rgba(71, 85, 105, 0.15);
+}
+.dark .border-t-outline-variant\/10 {
+  border-color: rgba(71, 85, 105, 0.15);
+}
+.dark .border-outline-variant\/5 {
+  border-color: rgba(71, 85, 105, 0.08);
+}
+.dark .border-b-outline-variant\/5 {
+  border-color: rgba(71, 85, 105, 0.08);
+}
+.dark .border-t-outline-variant\/5 {
+  border-color: rgba(71, 85, 105, 0.08);
+}
+.dark .border-x-outline-variant\/5 {
+  border-color: rgba(71, 85, 105, 0.08);
+}
+.dark .border-outline-variant\/60 {
+  border-color: rgba(71, 85, 105, 0.6);
+}
+.dark .divide-outline-variant\/5 > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgba(71, 85, 105, 0.08);
+}
+
+/* Dynamic primary color borders using --primary-rgb */
+.dark .border-primary\/10 {
+  border-color: rgba(var(--primary-rgb, 195, 192, 255), 0.15);
+}
+.dark .border-primary\/20 {
+  border-color: rgba(var(--primary-rgb, 195, 192, 255), 0.25);
+}
+.dark .border-primary\/30 {
+  border-color: rgba(var(--primary-rgb, 195, 192, 255), 0.35);
+}
+.dark .border-primary\/40 {
+  border-color: rgba(var(--primary-rgb, 195, 192, 255), 0.45);
+}
+.dark .border-primary\/50 {
+  border-color: rgba(var(--primary-rgb, 195, 192, 255), 0.55);
+}
+
+/* Custom Date Input Styling */
+input[type="date"] {
+  position: relative;
+}
+
+/* Hide default calendar indicator icon in WebKit browsers and stretch it to cover the input for click-anywhere accessibility */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  height: auto;
+  color: transparent;
+  background: transparent;
+  cursor: pointer;
+  z-index: 10;
+}
+
+

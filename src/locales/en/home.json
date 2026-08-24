@@ -1,0 +1,37 @@
+{
+  "hero": {
+    "badge": "React Base Project 1.0",
+    "title": "A Professional Foundation for Modern React Applications",
+    "subtitle": "Built to provide a clean, production-ready structure inspired by modern web standards and sleek aesthetics.",
+    "ctaDashboard": "Admin Dashboard",
+    "ctaAbout": "Learn More"
+  },
+  "features": {
+    "sectionTitle": "Everything you need to launch your next project",
+    "sectionSubtitle": "Prebuilt components, full state management, and unified design tokens saving you hundreds of development hours.",
+    "theme": {
+      "title": "Integrated Design & Custom Themes",
+      "desc": "Colors, fonts, and CSS variables managed from a single source of truth or live from the dashboard."
+    },
+    "security": {
+      "title": "Advanced RBAC & Security",
+      "desc": "Fine-grained role-based permissions, AES client-side encryption, and route protection guards."
+    },
+    "perf": {
+      "title": "Lightning Fast Performance",
+      "desc": "Automatic code splitting, lazy-loaded routes with error boundary fallbacks for optimal UX."
+    },
+    "i18n": {
+      "title": "Full Arabic & English Localization",
+      "desc": "Dynamic namespace loader supporting seamless RTL/LTR layout transitions without page reloads."
+    },
+    "dashboard": {
+      "title": "Professional Admin Panel",
+      "desc": "Responsive management layout with collapsible sidebar and dark mode support."
+    },
+    "api": {
+      "title": "Advanced API Architecture",
+      "desc": "Centralized Axios client with automatic interceptors, toast notifications, and LRU memory caching."
+    }
+  }
+}
