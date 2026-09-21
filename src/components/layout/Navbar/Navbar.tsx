@@ -1,24 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import NavLinks from './NavLinks';
 import ThemeSwitcher from './ThemeSwitcher';
 import LanguageSwitcher from './LanguageSwitcher';
-import UserMenu from './UserMenu';
 import { useBranding } from '../../../hooks/useBranding';
-import { useAuth } from '../../../hooks/useAuth';
+import { useLanguage } from '../../../hooks/useLanguage';
 
 export const Navbar: React.FC = () => {
-  const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { brandName, settings } = useBranding();
-  const { user, isAuthenticated } = useAuth();
+  const { language } = useLanguage();
+  const isArabic = language === 'ar';
+
+  const logoSrc = settings?.logo || '/logo-icon.png';
 
   // Close mobile menu on route change
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
@@ -48,20 +47,23 @@ export const Navbar: React.FC = () => {
       >
         {/* Top bar inside drawer */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-outline-variant/10">
-          <Link to="/" onClick={closeMobileMenu} title={brandName} className="flex items-center gap-1.5 max-w-[75%] min-w-0">
-            {settings?.logo && (
-              <img src={settings.logo} alt={brandName} className="h-7 w-auto object-contain shrink-0" />
-            )}
-            <span className="text-lg font-bold text-primary dark:text-primary-container font-primary truncate">
-              {brandName}
-            </span>
-            {!settings?.logo && (
-              <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined text-white text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                  deployed_code
-                </span>
-              </div>
-            )}
+          <Link to="/" onClick={closeMobileMenu} title={brandName} className="flex items-center gap-2 max-w-[75%] min-w-0">
+            <img
+              src={logoSrc}
+              alt={brandName}
+              className="h-8 w-auto object-contain shrink-0"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/logo-icon.png';
+              }}
+            />
+            <div className="flex flex-col text-start truncate">
+              <span className="text-base font-black text-primary dark:text-primary-container font-primary truncate leading-tight">
+                {brandName}
+              </span>
+              <span className="text-[10px] text-on-surface-variant font-medium leading-tight">
+                {isArabic ? 'د/ يوسف يحيى' : 'Dr/ Youssif Yahia'}
+              </span>
+            </div>
           </Link>
           <button
             onClick={closeMobileMenu}
@@ -72,27 +74,6 @@ export const Navbar: React.FC = () => {
           </button>
         </div>
 
-        {/* User info section (if logged in) */}
-        {isAuthenticated && user && (
-          <div className="px-5 py-4 border-b border-outline-variant/10 bg-surface-container-low/50 dark:bg-slate-800/30">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-full border-2 border-primary/20 overflow-hidden shrink-0 shadow-sm">
-                <img
-                  alt="User Avatar"
-                  className="w-full h-full object-cover"
-                  src={user.image || 'https://avatar.iran.liara.run/public/boy'}
-                />
-              </div>
-              <div className="min-w-0">
-                <p className="font-semibold text-on-surface text-sm truncate">
-                  {user.name}
-                </p>
-                <p className="text-xs text-on-surface-variant truncate">{user.email || user.phone}</p>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Navigation Links */}
         <div className="px-3 py-3">
           <NavLinks
@@ -102,32 +83,18 @@ export const Navbar: React.FC = () => {
           />
         </div>
 
-        {/* Auth buttons (if not logged in) */}
-        {!isAuthenticated && (
-          <>
-            <div className="mx-5 border-t border-outline-variant/10" />
-            <div className="px-5 py-4">
-              <div className="flex gap-3">
-                <Link
-                  to="/login"
-                  onClick={closeMobileMenu}
-                  className="flex-1 py-2.5 rounded-xl border-2 border-primary text-primary text-sm font-bold text-center hover:bg-primary hover:text-white transition-all duration-200 active:scale-[0.98]"
-                >
-                  {t('auth:login.submit')}
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={closeMobileMenu}
-                  className="flex-1 py-2.5 rounded-xl bg-primary text-white text-sm font-bold text-center hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 transition-all duration-200 active:scale-[0.98]"
-                >
-                  {t('auth:register.submit')}
-                </Link>
-              </div>
-            </div>
-          </>
-        )}
+        {/* Mobile Actions Drawer Footer */}
+        <div className="px-4 py-3 border-t border-outline-variant/10 flex items-center justify-between bg-surface-container-low dark:bg-slate-800/40">
+          <span className="text-xs font-semibold text-on-surface-variant">
+            {isArabic ? 'اللغة والمظهر:' : 'Language & Theme:'}
+          </span>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <ThemeSwitcher />
+          </div>
+        </div>
 
-        <div className="h-4" />
+        <div className="h-2" />
       </div>
     </div>,
     document.body
@@ -136,7 +103,7 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <header className="bg-surface/80 dark:bg-surface/85 backdrop-blur-xl docked full-width z-40 shadow-sm border-b border-outline-variant/10 transition-colors">
-        <nav className="flex justify-between items-center w-full px-4 md:px-margin-desktop py-3 md:py-4 max-w-container-max mx-auto gap-2">
+        <nav className="flex justify-between items-center w-full px-4 md:px-margin-desktop py-2.5 md:py-3 max-w-container-max mx-auto gap-2">
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -148,22 +115,25 @@ export const Navbar: React.FC = () => {
             </span>
           </button>
 
-          {/* Brand Logo */}
+          {/* Brand Logo & Name */}
           <div className="flex items-center gap-2 shrink-0 min-w-0">
-            <Link to="/" title={brandName} className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-              {settings?.logo && (
-                <img src={settings.logo} alt={brandName} className="h-8 sm:h-9 w-auto object-contain shrink-0" />
-              )}
-              <span className={`text-lg sm:text-xl md:text-2xl font-bold text-primary dark:text-primary-container whitespace-nowrap font-primary ${settings?.logo ? 'hidden sm:inline' : 'truncate'}`}>
-                {brandName}
-              </span>
-              {!settings?.logo && (
-                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary rounded-lg flex items-center justify-center shadow-md shadow-primary/20 shrink-0">
-                  <span className="material-symbols-outlined text-white text-[18px] sm:text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                    deployed_code
-                  </span>
-                </div>
-              )}
+            <Link to="/" title={brandName} className="flex items-center gap-2 sm:gap-2.5 min-w-0 group">
+              <img
+                src={logoSrc}
+                alt={brandName}
+                className="h-8 sm:h-9 md:h-10 w-auto object-contain shrink-0 transition-transform duration-300 group-hover:scale-105"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/logo-icon.png';
+                }}
+              />
+              <div className="flex flex-col text-start">
+                <span className="text-base sm:text-lg md:text-xl font-black text-primary dark:text-primary-container whitespace-nowrap font-primary leading-tight">
+                  {brandName}
+                </span>
+                <span className="text-[10px] sm:text-xs text-on-surface-variant font-medium leading-tight">
+                  {isArabic ? 'د/ يوسف يحيى' : 'Dr/ Youssif Yahia'}
+                </span>
+              </div>
             </Link>
           </div>
 
@@ -173,28 +143,9 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* End Actions */}
-          <div className="flex items-center gap-1 sm:gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <LanguageSwitcher />
             <ThemeSwitcher />
-
-            {isAuthenticated ? (
-              <UserMenu />
-            ) : (
-              <div className="hidden sm:flex items-center gap-2">
-                <Link
-                  to="/login"
-                  className="px-3 sm:px-4 py-1.5 rounded-full border border-primary text-primary text-xs sm:text-sm font-semibold hover:bg-primary hover:text-white transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap"
-                >
-                  {t('auth:login.submit')}
-                </Link>
-                <Link
-                  to="/register"
-                  className="px-3 sm:px-4 py-1.5 rounded-full bg-primary text-white text-xs sm:text-sm font-semibold hover:bg-primary/95 hover:shadow-lg hover:shadow-primary/20 transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap"
-                >
-                  {t('auth:register.submit')}
-                </Link>
-              </div>
-            )}
           </div>
         </nav>
       </header>
@@ -203,4 +154,5 @@ export const Navbar: React.FC = () => {
     </>
   );
 };
+
 export default Navbar;

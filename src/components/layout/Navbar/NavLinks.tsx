@@ -13,9 +13,10 @@ export const NavLinks: React.FC<NavLinksProps> = ({ className, onLinkClick, isMo
   const { t } = useTranslation();
 
   const links = [
-    { to: '/', label: t('nav.home'), icon: 'home' },
-    { to: '/about', label: t('nav.about'), icon: 'info' },
-    { to: '/contact', label: t('nav.contact'), icon: 'mail' },
+    { to: '/', label: t('nav.home', 'الرئيسية'), icon: 'home' },
+    { to: '/products', label: t('nav.products', 'الأدوية والمنتجات'), icon: 'medication' },
+    { to: '/about', label: t('nav.about', 'من نحن'), icon: 'info' },
+    { to: '/contact', label: t('nav.contact', 'تواصل معنا'), icon: 'mail' },
   ];
 
   return (

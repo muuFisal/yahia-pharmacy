@@ -4,6 +4,7 @@ import Navbar from './Navbar/Navbar';
 import Footer from './Footer/Footer';
 import AnnouncementBar from './AnnouncementBar';
 import ScrollToTop from '../shared/ScrollToTop';
+import FloatingWhatsAppButton from '../shared/FloatingWhatsAppButton';
 import RouteTranslationBoundary from './RouteTranslationBoundary';
 
 export const MainLayout: React.FC = () => {
@@ -49,6 +50,7 @@ export const MainLayout: React.FC = () => {
       </main>
       <Footer />
       <ScrollToTop />
+      <FloatingWhatsAppButton />
     </div>
   );
 };
