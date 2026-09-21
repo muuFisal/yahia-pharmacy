@@ -1,21 +1,45 @@
 {
-  "appName": "My App",
+  "appName": "Yahia Pharmacy",
+  "doctorTitle": "Dr/ Youssif Yahia",
   "loading": "Loading...",
   "errorOccurred": "An unexpected error occurred",
   "tryAgainLater": "Please try again later",
   "retry": "Retry",
   "retrying": "Retrying...",
+  "switchLanguage": "العربية",
+  "currentLanguage": "English",
   "nav": {
     "home": "Home",
+    "products": "Medicines & Products",
     "about": "About Us",
-    "contact": "Contact Us"
+    "contact": "Contact Us",
+    "dashboard": "Dashboard"
+  },
+  "announcement": {
+    "texts": [
+      "💊 Yahia Pharmacy .. At your service 24/7 all week long",
+      "🚚 Fast and safe delivery for all medicines to your doorstep",
+      "📋 Send your prescription photo via WhatsApp for instant preparation",
+      "✨ 100% Guaranteed Authentic Medicines & Cosmetics"
+    ]
+  },
+  "footer": {
+    "desc": "Yahia Pharmacy .. Trusted healthcare and a specialized pharmacist team ready to serve you 24/7.",
+    "links": "Quick Links",
+    "support": "Support & Help",
+    "contact": "Contact Information",
+    "followUs": "Follow Us",
+    "rights": "All rights reserved © 2026 Yahia Pharmacy",
+    "developedBy": "Developed by",
+    "helpCenter": "Help Center",
+    "aboutApp": "About Pharmacy"
   },
   "toast": {
     "loginRequired": "Please log in first to continue"
   },
   "forbidden": {
-    "title": "Access Forbidden",
-    "desc": "Sorry, you don't have sufficient permissions to access this page.",
+    "title": "Access Denied",
+    "desc": "Sorry, you do not have permission to access this page.",
     "backToDashboard": "Back to Dashboard"
   },
   "errors": {

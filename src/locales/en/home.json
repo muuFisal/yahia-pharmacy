@@ -1,37 +1,65 @@
 {
   "hero": {
-    "badge": "React Base Project 1.0",
-    "title": "A Professional Foundation for Modern React Applications",
-    "subtitle": "Built to provide a clean, production-ready structure inspired by modern web standards and sleek aesthetics.",
-    "ctaDashboard": "Admin Dashboard",
-    "ctaAbout": "Learn More"
+    "badge": "Yahia Pharmacy .. 24/7 At Your Service",
+    "titleLine1": "Your Health & Family Well-being",
+    "titleLine2": "In Safe Hands with Yahia Pharmacy",
+    "subtitle": "We provide all medications, skin & hair care products, and 100% authentic vitamins. Order directly via WhatsApp for instant delivery to your doorstep.",
+    "ctaPrescription": "Send Prescription via WhatsApp",
+    "ctaConsultation": "Consult a Pharmacist",
+    "fastDelivery": "Fast Delivery",
+    "toDoorstep": "To Your Door",
+    "authenticMeds": "Authentic Medicines",
+    "licensed": "100% Certified",
+    "service247": "24/7 Service",
+    "allWeek": "All Week Long",
+    "quickPrescriptionCard": "Quick Prescription Refill",
+    "quickPrescriptionDesc": "Snap your prescription & get it delivered",
+    "availableNow": "Available Now",
+    "trustedClients": "+25,000",
+    "trustedClientsLabel": "Satisfied Customers"
   },
-  "features": {
-    "sectionTitle": "Everything you need to launch your next project",
-    "sectionSubtitle": "Prebuilt components, full state management, and unified design tokens saving you hundreds of development hours.",
-    "theme": {
-      "title": "Integrated Design & Custom Themes",
-      "desc": "Colors, fonts, and CSS variables managed from a single source of truth or live from the dashboard."
-    },
-    "security": {
-      "title": "Advanced RBAC & Security",
-      "desc": "Fine-grained role-based permissions, AES client-side encryption, and route protection guards."
-    },
-    "perf": {
-      "title": "Lightning Fast Performance",
-      "desc": "Automatic code splitting, lazy-loaded routes with error boundary fallbacks for optimal UX."
-    },
-    "i18n": {
-      "title": "Full Arabic & English Localization",
-      "desc": "Dynamic namespace loader supporting seamless RTL/LTR layout transitions without page reloads."
-    },
-    "dashboard": {
-      "title": "Professional Admin Panel",
-      "desc": "Responsive management layout with collapsible sidebar and dark mode support."
-    },
-    "api": {
-      "title": "Advanced API Architecture",
-      "desc": "Centralized Axios client with automatic interceptors, toast notifications, and LRU memory caching."
-    }
+  "categories": {
+    "title": "Pharmacy Categories & Departments",
+    "subtitle": "Browse all categorized medical and personal care departments to easily find what you need",
+    "allCategories": "All Categories"
+  },
+  "offers": {
+    "title": "Yahia Pharmacy Exclusive Offers",
+    "subtitle": "Weekly exclusive discounts on skincare, vitamins, supplements, and medical devices",
+    "discountBadge": "Up to 35% OFF"
+  },
+  "prescription": {
+    "pill": "Instant Prescription Service",
+    "title": "Have a Prescription or Monthly Refill? 📋",
+    "subtitle": "Take a photo of your prescription and send it directly on WhatsApp to Yahia Pharmacy. Our licensed pharmacist will review dosages and deliver your order in minutes!",
+    "check1": "Accurate Pharmacist Review",
+    "check2": "Safe Alternatives Available",
+    "check3": "Temperature-Controlled Fast Delivery",
+    "cta": "Snap & Send via WhatsApp"
+  },
+  "products": {
+    "title": "Healthcare & Daily Essentials",
+    "subtitle": "Handpicked selection of the most trusted medical treatments and personal care essentials",
+    "viewAll": "View All Products"
+  },
+  "about": {
+    "pill": "About Us",
+    "years": "12+",
+    "yearsTitle": "Years of Excellence",
+    "yearsSubtitle": "Certified Healthcare",
+    "authenticBadge": "100% Authentic Products",
+    "pharmacyBrand": "Yahia Pharmacy",
+    "drTitle": "Dr. Youssif Yahia",
+    "ctaConsult": "Request Free Pharmacist Consultation"
+  },
+  "trust": {
+    "deliveryTitle": "Fast & Safe Delivery",
+    "deliveryDesc": "Quick delivery to your doorstep maintaining complete cold-chain and safety standards.",
+    "authenticTitle": "100% Authentic Products",
+    "authenticDesc": "All medicines, vitamins, and cosmetics are sourced directly from certified authorized agents.",
+    "pharmacistsTitle": "Expert Pharmacists at Your Service",
+    "pharmacistsDesc": "Free clinical consultations, accurate dosage instructions, and safe medical alternatives.",
+    "whatsappTitle": "Direct WhatsApp Ordering",
+    "whatsappDesc": "Frictionless ordering experience in a single click with instant pharmacist response."
   }
 }

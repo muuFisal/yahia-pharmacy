@@ -1,0 +1,56 @@
+{
+  "title": "Medicines & Products Catalog",
+  "subtitle": "Browse and search all medicines, personal care products, and medical supplies",
+  "searchPlaceholder": "Name, active ingredient, brand...",
+  "currency": "EGP",
+  "inStock": "In Stock for Delivery",
+  "discountOff": "OFF",
+  "orderOfferWhatsApp": "Order Offer via WhatsApp",
+  "orderWhatsApp": "Order via WhatsApp",
+  "filters": {
+    "title": "Filter Products",
+    "searchLabel": "Search Medicines",
+    "category": "Medical Category",
+    "prescription": "Prescription Type",
+    "all": "All",
+    "otc": "Over The Counter (OTC)",
+    "rx": "Prescription (Rx)",
+    "dosageForm": "Dosage Form",
+    "targetGroup": "Target Group",
+    "onlyOffers": "Special Offers Only",
+    "maxPrice": "Max Price",
+    "reset": "Reset Filters",
+    "apply": "Apply Filters",
+    "activeFilters": "Active Filters"
+  },
+  "dosageForms": {
+    "أقراص وكبسولات": "Tablets & Capsules",
+    "شراب وسوائل": "Syrup & Liquids",
+    "كريم ومرهم": "Cream & Ointment",
+    "قطرات وبخاخ": "Drops & Sprays",
+    "أجهزة ومستلزمات": "Devices & Supplies",
+    "مكملات غذائية": "Food Supplements"
+  },
+  "targetGroups": {
+    "الجميع": "All",
+    "كبار": "Adults",
+    "أطفال": "Kids",
+    "رضع": "Infants",
+    "نساء": "Women"
+  },
+  "sort": {
+    "label": "Sort by",
+    "popular": "Most Popular",
+    "priceAsc": "Price: Low to High",
+    "priceDesc": "Price: High to Low",
+    "rating": "Top Rated"
+  },
+  "results": "Results",
+  "itemsFound": "products available",
+  "empty": {
+    "title": "No products found",
+    "desc": "Try searching with different keywords or reset your filters.",
+    "action": "Reset Filters"
+  },
+  "prescriptionCta": "Have a prescription? Send it directly"
+}

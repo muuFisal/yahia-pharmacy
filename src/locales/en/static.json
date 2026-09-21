@@ -1,20 +1,23 @@
 {
   "about": {
-    "title": "About Project",
-    "subtitle": "An advanced starter template and professional design for web applications with React and Tailwind CSS.",
-    "heading": "What does this template offer?",
-    "text1": "This project is built to serve as a solid base for any new application, with clean separation between website and dashboard pages, CSS variable-based design system, dark/light theme support, and full internationalization."
+    "title": "About Yahia Pharmacy",
+    "subtitle": "Specialized pharmaceutical care, complete reliability, and continuous 24/7 service under the supervision of Dr. Youssif Yahia.",
+    "heading": "Our Health Mission & Vision",
+    "text1": "Yahia Pharmacy was founded to provide a benchmark in modern pharmacy services, offering 100% authentic medications, expert medical consultations, and cold-chain fast delivery preserving drug efficacy."
   },
   "contact": {
-    "title": "Contact Us",
-    "subtitle": "We are always happy to answer your questions and hear your feedback.",
-    "name": "Name",
+    "title": "Contact Yahia Pharmacy",
+    "subtitle": "Our pharmacy team is always ready to answer your medical inquiries and prepare your prescriptions 24/7.",
+    "name": "Full Name",
     "namePlaceholder": "Enter your full name",
     "email": "Email Address",
     "emailPlaceholder": "example@mail.com",
-    "message": "Message",
-    "messagePlaceholder": "Write your inquiry or message here...",
+    "message": "Your Message or Inquiry",
+    "messagePlaceholder": "Write your medical inquiry or requested medications here...",
     "submit": "Send Message",
-    "success": "Your message has been sent successfully!"
+    "success": "Your message has been sent successfully! Our pharmacy team will respond promptly.",
+    "whatsappCardTitle": "Direct & Instant WhatsApp Chat",
+    "whatsappCardSubtitle": "Chat directly with our on-duty pharmacist for immediate medical advice or to order medications without delay.",
+    "whatsappButton": "Chat Instantly on WhatsApp"
   }
 }
