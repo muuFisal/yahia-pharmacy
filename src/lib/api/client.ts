@@ -4,7 +4,7 @@ import { secureStorage } from '../../utils/secureStorage';
 
 // ─────────────────────────────────────────────────────────────────
 // Axios instance — every API call in the app goes through here.
-// Automatically attaches: X-Tenant-Token, Accept-Language, Bearer token.
+// Automatically attaches: Accept-Language, Dashboard Bearer token.
 // ─────────────────────────────────────────────────────────────────
 
 const apiClient = axios.create({
@@ -21,22 +21,14 @@ const apiClient = axios.create({
 // ── Request Interceptor ──────────────────────────────────────────
 apiClient.interceptors.request.use(
   (config) => {
-    // 1️⃣  X-Tenant-Token — always sent to identify the storefront
-    config.headers['X-Tenant-Token'] = env.TENANT_TOKEN;
-
-    // 2️⃣  Accept-Language — synced with the app's current language
+    // 1️⃣  Accept-Language — synced with the app's current language
     const lang = localStorage.getItem('language') || 'ar';
     config.headers['Accept-Language'] = lang;
 
-    // 3️⃣  Authorization — Bearer token for authenticated endpoints
+    // 2️⃣  Authorization — Bearer token for dashboard authenticated endpoints
     const isDashboardRequest = config.url?.startsWith('/v1/dashboard');
     if (isDashboardRequest) {
       const token = secureStorage.getItem<string>('admin_auth_token');
-      if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
-      }
-    } else {
-      const token = localStorage.getItem('auth_token');
       if (token) {
         config.headers['Authorization'] = `Bearer ${token}`;
       }
@@ -56,7 +48,7 @@ apiClient.interceptors.response.use(
   (error) => {
     const status = error.response?.status;
 
-    // 401 Unauthorized → clear auth state & redirect to login
+    // 401 Unauthorized → clear dashboard auth state & redirect to admin login if inside admin area
     if (status === 401) {
       const isDashboardRequest = error.config?.url?.startsWith('/v1/dashboard');
       if (isDashboardRequest) {
@@ -68,18 +60,12 @@ apiClient.interceptors.response.use(
         if (window.location.pathname.startsWith('/admin') && window.location.pathname !== '/admin/login') {
           window.location.href = '/admin/login';
         }
-      } else {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user');
-        if (window.location.pathname !== '/login') {
-          window.location.href = '/login?expired=true';
-        }
       }
     }
 
-    // 403 Forbidden → tenant token is invalid or deactivated
+    // 403 Forbidden
     if (status === 403) {
-      console.error('[API] Forbidden — check X-Tenant-Token validity');
+      console.error('[API] Forbidden access');
     }
 
     // 429 Too Many Requests → rate limited

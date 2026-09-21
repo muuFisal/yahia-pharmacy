@@ -19,7 +19,7 @@ export interface DashboardContextType {
   setAdminProfile: React.Dispatch<React.SetStateAction<AdminProfile>>;
   /** Permission strings from the backend (e.g. "dashboard.orders.view") */
   userPermissions: string[];
-  /** Role strings from the backend (e.g. "tenant_owner") */
+  /** Role strings from the backend (e.g. "admin") */
   userRoles: string[];
   /** Function to fetch and reload fresh user permissions and profile from backend */
   refreshPermissions: () => Promise<void>;

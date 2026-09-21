@@ -43,58 +43,9 @@ export interface ApiError {
   errors?: Record<string, string[]>;
 }
 
-// ── Auth types ──────────────────────────────────────────────────
-export interface AuthUser {
-  id: number;
-  tenant_id?: number;
-  name: string;
-  email: string;
-  phone: string;
-  gender?: 'male' | 'female';
-  status?: boolean;
-  image?: string | null;
-  created_at?: string;
-}
-
-export interface LoginRequest {
-  login: string; // email or phone
-  password: string;
-  fcm_token?: string;
-}
-
-export interface LoginResponse {
-  student: AuthUser;
-  token: string;
-}
-
-export interface RegisterRequest {
-  name: string;
-  email?: string;
-  phone: string;
-  phone_confirmation?: string;
-  password: string;
-  gender?: 'male' | 'female';
-}
-
-export interface RegisterResponse {
-  phone: string;
-}
-
-export interface VerifyOtpRequest {
-  phone: string;
-  token: string;
-  fcm_token?: string;
-}
-
-export interface VerifyOtpResponse {
-  student: AuthUser;
-  token: string;
-}
-
 // ── Dashboard Auth types ───────────────────────────────────────
 export interface DashboardUser {
   id: number;
-  tenant_id?: number;
   name: string;
   email: string;
   phone?: string;

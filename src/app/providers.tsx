@@ -1,27 +1,18 @@
 import React, { useState, useEffect, useCallback, useLayoutEffect, useRef } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import type {
-  AuthUser,
-  LoginRequest,
-  RegisterRequest,
-  VerifyOtpRequest,
-} from '../types/api';
 import { DESIGN_TOKENS } from '../styles/tokens';
 import { ToastProvider } from '../components/ui/Toast/ToastProvider';
 import { LoadingContext } from '../hooks/useLoading';
 import LoadingScreen from '../components/shared/LoadingScreen';
 import { apiClient, API_ENDPOINTS } from '../lib/api';
-import { apiCache } from '../lib/api/cache';
-import { ensureNamespaceLoaded, getRouteNamespaces } from '../lib/i18n';
-import { AuthService } from '../services/auth.service';
+import { env } from '../lib/env';
 import {
   type StorefrontSettings,
   ThemeContext,
   LanguageContext,
   FontContext,
   BrandingContext,
-  AuthContext,
 } from './context';
 
 // --- Providers Wrapper ---
@@ -42,13 +33,9 @@ const AppProvidersInner: React.FC<{ children: React.ReactNode }> = ({ children }
   const [isInitTimeout, setIsInitTimeout] = useState(false);
   const initControllerRef = useRef<AbortController>(new AbortController());
 
-  // 6. Auth State (Auth loading only true if token exists)
-  const [user, setUser] = useState<AuthUser | null>(AuthService.getStoredUser());
-  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(() => AuthService.isAuthenticated());
-
   // Fail-safe maximum initialization timeout (5 seconds max safety fallback)
   useEffect(() => {
-    if (!isSettingsLoading && !isAuthLoading) {
+    if (!isSettingsLoading) {
       return;
     }
     const safetyTimer = setTimeout(() => {
@@ -56,9 +43,9 @@ const AppProvidersInner: React.FC<{ children: React.ReactNode }> = ({ children }
       setIsInitTimeout(true);
     }, 5000);
     return () => clearTimeout(safetyTimer);
-  }, [isSettingsLoading, isAuthLoading]);
+  }, [isSettingsLoading]);
 
-  const isLoading = (isSettingsLoading || isAuthLoading) && !isInitTimeout || isManualLoading;
+  const isLoading = (isSettingsLoading && !isInitTimeout) || isManualLoading;
 
   const triggerLoading = useCallback((duration = 600) => {
     setIsManualLoading(true);
@@ -106,23 +93,31 @@ const AppProvidersInner: React.FC<{ children: React.ReactNode }> = ({ children }
 
   const dir: 'rtl' | 'ltr' = languageState === 'ar' ? 'rtl' : 'ltr';
 
-  // 5. Branding State
-  const [brandName, setBrandName] = useState<string>(
-    settings?.brandName || localStorage.getItem('brandName') || 'My App'
-  );
+  // 5. Branding State (Default to Yahia Pharmacy tokens)
+  const [brandName, setBrandName] = useState<string>(() => {
+    const saved = localStorage.getItem('brandName');
+    if (saved && saved !== 'My App') return saved;
+    return settings?.brandName || 'صيدلية يحيى';
+  });
+
   const [primaryColor, setPrimaryColor] = useState<string>(() => {
     if (settings) {
       const themeColors = settings.colors?.[theme] || settings.colors?.light;
       if (themeColors?.primary) return themeColors.primary;
     }
-    return localStorage.getItem('primaryColor') || '#3525cd';
+    const saved = localStorage.getItem('primaryColor');
+    if (saved && saved !== '#3525cd' && saved !== '#4f46e5') return saved;
+    return DESIGN_TOKENS.colors[theme].primary;
   });
+
   const [secondaryColor, setSecondaryColor] = useState<string>(() => {
     if (settings) {
       const themeColors = settings.colors?.[theme] || settings.colors?.light;
       if (themeColors?.secondary) return themeColors.secondary;
     }
-    return localStorage.getItem('secondaryColor') || '#855300';
+    const saved = localStorage.getItem('secondaryColor');
+    if (saved && saved !== '#855300' && saved !== '#fea619') return saved;
+    return DESIGN_TOKENS.colors[theme].secondary;
   });
 
   const toggleTheme = useCallback(() => {
@@ -140,24 +135,18 @@ const AppProvidersInner: React.FC<{ children: React.ReactNode }> = ({ children }
   }, [settings]);
 
   const setLanguage = useCallback((lang: 'ar' | 'en') => {
-    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
-    const activeNs = getRouteNamespaces(currentPath);
-    return ensureNamespaceLoaded(activeNs, lang).then((res) => {
-      if (res.success) {
-        setLanguageState(lang);
-        localStorage.setItem('language', lang);
-        i18n.changeLanguage(lang);
-        const d = lang === 'ar' ? 'rtl' : 'ltr';
-        document.documentElement.dir = d;
-        document.documentElement.lang = lang;
-        return true;
-      }
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[i18n] Language switch prevented due to namespace load failure:', res.failedNamespaces, res.error);
-      }
-      return false;
-    });
-  }, [i18n]);
+    setLanguageState(lang);
+    localStorage.setItem('language', lang);
+    i18n.changeLanguage(lang);
+    const d = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.dir = d;
+    document.documentElement.lang = lang;
+    if (!settings?.brandName) {
+      setBrandName(lang === 'en' ? 'Yahia Pharmacy' : 'صيدلية يحيى');
+      document.title = lang === 'en' ? 'Yahia Pharmacy | Dr. Youssif Yahia' : 'صيدلية يحيى | د/ يوسف يحيى';
+    }
+    return Promise.resolve(true);
+  }, [i18n, settings]);
 
   useEffect(() => {
     localStorage.setItem('activeFont', activeFont);
@@ -283,15 +272,17 @@ const AppProvidersInner: React.FC<{ children: React.ReactNode }> = ({ children }
         return;
       }
 
+      if (!env.API_BASE_URL) {
+        setIsSettingsLoading(false);
+        return;
+      }
+
       try {
         const { data } = await apiClient.get(API_ENDPOINTS.STOREFRONT.SETTINGS, {
           signal: initControllerRef.current.signal,
         });
         if (!initControllerRef.current.signal.aborted && data && data.data) {
-          const s = data.data as StorefrontSettings & { tenant_id?: string | number; id?: string | number };
-          if (s.tenant_id || s.id) {
-            apiCache.setActiveTenantId(String(s.tenant_id || s.id));
-          }
+          const s = data.data as StorefrontSettings;
           setSettings(s);
           localStorage.setItem('storefront_settings', JSON.stringify(s));
           localStorage.setItem('storefront_settings_timestamp', String(now));
@@ -299,9 +290,10 @@ const AppProvidersInner: React.FC<{ children: React.ReactNode }> = ({ children }
           applyStateSettings(s, currentTheme);
         }
       } catch (err: unknown) {
-        const errorName = err instanceof Error ? err.name : (err as { name?: string })?.name;
-        if (!axios.isCancel(err) && errorName !== 'CanceledError' && errorName !== 'AbortError') {
-          console.error('Failed to load storefront settings:', err);
+        // Gracefully handle local dev / mock mode when backend is offline
+        const errorStatus = (err as { response?: { status?: number } })?.response?.status;
+        if (errorStatus !== 404 && !axios.isCancel(err)) {
+          console.warn('Using local pharmacy storefront defaults.');
         }
       } finally {
         setIsSettingsLoading(false);
@@ -311,7 +303,7 @@ const AppProvidersInner: React.FC<{ children: React.ReactNode }> = ({ children }
     fetchStorefrontSettings();
   }, [applyStateSettings]);
 
-  // Synchronize dark/light class on document element and apply tenant branding settings
+  // Synchronize dark/light class on document element and apply storefront branding settings
   useEffect(() => {
     localStorage.setItem('theme', theme);
     if (theme === 'dark') {
@@ -321,6 +313,19 @@ const AppProvidersInner: React.FC<{ children: React.ReactNode }> = ({ children }
     }
     if (settings) {
       applyDOMSettings(settings, theme);
+    } else {
+      // Inject pharmacy design tokens directly
+      const currentTokens = DESIGN_TOKENS.colors[theme];
+      Object.entries(currentTokens).forEach(([key, val]) => {
+        const cssVarName = `--color-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+        document.documentElement.style.setProperty(cssVarName, val);
+      });
+      if (currentTokens.primary?.startsWith('#')) {
+        const r = parseInt(currentTokens.primary.slice(1, 3), 16);
+        const g = parseInt(currentTokens.primary.slice(3, 5), 16);
+        const b = parseInt(currentTokens.primary.slice(5, 7), 16);
+        document.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
+      }
     }
   }, [theme, settings, applyDOMSettings]);
 
@@ -339,7 +344,9 @@ const AppProvidersInner: React.FC<{ children: React.ReactNode }> = ({ children }
       document.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
     }
 
-    if (primaryColor.toLowerCase() === '#3525cd') {
+    if (primaryColor.toLowerCase() === '#00897b') {
+      document.documentElement.style.setProperty('--color-primary-container', '#059669');
+    } else if (primaryColor.toLowerCase() === '#3525cd') {
       document.documentElement.style.setProperty('--color-primary-container', '#4f46e5');
     } else if (primaryColor.toLowerCase() === '#fea619') {
       document.documentElement.style.setProperty('--color-primary-container', '#d97706');
@@ -352,7 +359,9 @@ const AppProvidersInner: React.FC<{ children: React.ReactNode }> = ({ children }
     localStorage.setItem('secondaryColor', secondaryColor);
     document.documentElement.style.setProperty('--color-secondary', secondaryColor);
     
-    if (secondaryColor.toLowerCase() === '#855300') {
+    if (secondaryColor.toLowerCase() === '#0284c7') {
+      document.documentElement.style.setProperty('--color-secondary-container', '#0ea5e9');
+    } else if (secondaryColor.toLowerCase() === '#855300') {
       document.documentElement.style.setProperty('--color-secondary-container', '#fea619');
     } else if (secondaryColor.toLowerCase() === '#3525cd') {
       document.documentElement.style.setProperty('--color-secondary-container', '#4f46e5');
@@ -362,9 +371,9 @@ const AppProvidersInner: React.FC<{ children: React.ReactNode }> = ({ children }
   }, [secondaryColor]);
 
   const resetBranding = () => {
-    setBrandName('My App');
-    setPrimaryColor('#3525cd');
-    setSecondaryColor('#855300');
+    setBrandName('صيدلية يحيى');
+    setPrimaryColor(DESIGN_TOKENS.colors.light.primary);
+    setSecondaryColor(DESIGN_TOKENS.colors.light.secondary);
     setSettings(null);
     localStorage.removeItem('brandName');
     localStorage.removeItem('primaryColor');
@@ -385,75 +394,15 @@ const AppProvidersInner: React.FC<{ children: React.ReactNode }> = ({ children }
     document.documentElement.style.removeProperty('--radius-lg');
     document.documentElement.style.removeProperty('--radius-xl');
     document.documentElement.style.removeProperty('--radius-2xl');
-    document.title = 'My App';
+    document.title = 'صيدلية يحيى';
 
     const favEl = document.getElementById('favicon') as HTMLLinkElement;
     if (favEl) {
-      favEl.href = '/src/assets/logo.svg';
+      favEl.href = '/favicon.png';
     }
   };
 
-  // Validate stored token on app mount
-  useEffect(() => {
-    const validateAuth = async () => {
-      if (!AuthService.isAuthenticated()) {
-        setIsAuthLoading(false);
-        return;
-      }
-
-      try {
-        const currentUser = await AuthService.getMe({ signal: initControllerRef.current.signal });
-        if (!initControllerRef.current.signal.aborted) {
-          setUser(currentUser);
-          localStorage.setItem('user', JSON.stringify(currentUser));
-        }
-      } catch (err: unknown) {
-        const errorName = err instanceof Error ? err.name : (err as { name?: string })?.name;
-        if (!axios.isCancel(err) && errorName !== 'CanceledError' && errorName !== 'AbortError') {
-          console.warn('Session validation error. Preserving session in localStorage as requested.', err);
-        }
-      } finally {
-        setIsAuthLoading(false);
-      }
-    };
-
-    validateAuth();
-  }, []);
-
-  const login = useCallback(async (credentials: LoginRequest) => {
-    const response = await AuthService.login(credentials);
-    setUser(response.student);
-  }, []);
-
-  const register = useCallback(async (payload: RegisterRequest) => {
-    return await AuthService.register(payload);
-  }, []);
-
-  const verifyOtp = useCallback(async (payload: VerifyOtpRequest) => {
-    const response = await AuthService.verifyOtp(payload);
-    setUser(response.student);
-    return response;
-  }, []);
-
-  const logout = useCallback(async () => {
-    await AuthService.logout();
-    setUser(null);
-  }, []);
-
-  const refreshUser = useCallback(async () => {
-    try {
-      const currentUser = await AuthService.getMe();
-      setUser(currentUser);
-      localStorage.setItem('user', JSON.stringify(currentUser));
-    } catch {
-      setUser(null);
-    }
-  }, []);
-
-  const isAuthenticated = !!user;
-
   const loadingValue = React.useMemo(() => ({ isLoading, setIsLoading: setIsManualLoading, triggerLoading }), [isLoading, triggerLoading]);
-  const authValue = React.useMemo(() => ({ user, isAuthenticated, isAuthLoading, login, register, verifyOtp, logout, refreshUser }), [user, isAuthenticated, isAuthLoading, login, register, verifyOtp, logout, refreshUser]);
   const themeValue = React.useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme]);
   const languageValue = React.useMemo(() => ({ language: languageState, setLanguage, dir }), [languageState, setLanguage, dir]);
   const fontValue = React.useMemo(() => ({ activeFont, setFont, fontOptions: DESIGN_TOKENS.fonts }), [activeFont, setFont]);
@@ -461,20 +410,18 @@ const AppProvidersInner: React.FC<{ children: React.ReactNode }> = ({ children }
 
   return (
     <LoadingContext.Provider value={loadingValue}>
-      <AuthContext.Provider value={authValue}>
-        <ThemeContext.Provider value={themeValue}>
-          <LanguageContext.Provider value={languageValue}>
-            <FontContext.Provider value={fontValue}>
-              <BrandingContext.Provider value={brandingValue}>
-                <>
-                  {children}
-                  {isLoading && <LoadingScreen />}
-                </>
-              </BrandingContext.Provider>
-            </FontContext.Provider>
-          </LanguageContext.Provider>
-        </ThemeContext.Provider>
-      </AuthContext.Provider>
+      <ThemeContext.Provider value={themeValue}>
+        <LanguageContext.Provider value={languageValue}>
+          <FontContext.Provider value={fontValue}>
+            <BrandingContext.Provider value={brandingValue}>
+              <>
+                {children}
+                {isLoading && <LoadingScreen />}
+              </>
+            </BrandingContext.Provider>
+          </FontContext.Provider>
+        </LanguageContext.Provider>
+      </ThemeContext.Provider>
     </LoadingContext.Provider>
   );
 };

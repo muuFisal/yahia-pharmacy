@@ -4,10 +4,9 @@ import { lazyRoute, standaloneLazyRoute } from '../components/layout/lazyRouteHe
 import MainLayout from '../components/layout/MainLayout';
 import {
   importHomePage,
+  importProductsPage,
   importAboutPage,
   importContactPage,
-  importLoginPage,
-  importRegisterPage,
   importNotFoundPage,
   importDashboardLayout,
   importAdminLoginPage,
@@ -32,10 +31,9 @@ export const AppRouter: React.FC = () => {
         {/* ── Website Routes ── */}
         <Route element={<MainLayout />}>
           <Route index element={lazyRoute(importHomePage)} />
+          <Route path="products" element={lazyRoute(importProductsPage)} />
           <Route path="about" element={lazyRoute(importAboutPage)} />
           <Route path="contact" element={lazyRoute(importContactPage)} />
-          <Route path="login" element={lazyRoute(importLoginPage)} />
-          <Route path="register" element={lazyRoute(importRegisterPage)} />
           <Route path="*" element={lazyRoute(importNotFoundPage)} />
         </Route>
 

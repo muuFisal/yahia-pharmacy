@@ -38,11 +38,14 @@ export const DashboardLayout: React.FC = () => {
     }
     const apiUser = DashboardAuthService.getStoredUser();
     if (apiUser) {
-      const primaryRole = apiUser.roles[0] || 'staff';
+      const primaryRole = apiUser.roles[0] || 'admin';
       const roleMap: Record<string, { ar: string; en: string }> = {
-        tenant_owner: { ar: 'مالك المركز', en: 'Center Owner' },
-        tenant_manager: { ar: 'مدير المركز', en: 'Center Manager' },
+        admin: { ar: 'مدير النظام', en: 'System Admin' },
+        manager: { ar: 'مدير الصيدلية', en: 'Pharmacy Manager' },
+        pharmacist: { ar: 'صيدلي', en: 'Pharmacist' },
         staff: { ar: 'موظف', en: 'Staff' },
+        tenant_owner: { ar: 'مدير النظام', en: 'System Admin' },
+        tenant_manager: { ar: 'مدير الصيدلية', en: 'Pharmacy Manager' },
       };
       const resolvedRole = roleMap[primaryRole] || { ar: primaryRole, en: primaryRole };
 
@@ -59,8 +62,8 @@ export const DashboardLayout: React.FC = () => {
     return {
       nameAr: 'أحمد السعدني',
       nameEn: 'Ahmed El-Saadani',
-      roleAr: 'مدير المركز',
-      roleEn: 'Center Director',
+      roleAr: 'مدير النظام',
+      roleEn: 'System Admin',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
       email: 'admin@example.com',
       phone: '01012345678'
@@ -69,11 +72,14 @@ export const DashboardLayout: React.FC = () => {
 
   const refreshPermissions = useCallback(async () => {
     const freshUser = await DashboardAuthService.getMe();
-    const primaryRole = freshUser.roles[0] || 'staff';
+    const primaryRole = freshUser.roles[0] || 'admin';
     const roleMap: Record<string, { ar: string; en: string }> = {
-      tenant_owner: { ar: 'مالك المركز', en: 'Center Owner' },
-      tenant_manager: { ar: 'مدير المركز', en: 'Center Manager' },
+      admin: { ar: 'مدير النظام', en: 'System Admin' },
+      manager: { ar: 'مدير الصيدلية', en: 'Pharmacy Manager' },
+      pharmacist: { ar: 'صيدلي', en: 'Pharmacist' },
       staff: { ar: 'موظف', en: 'Staff' },
+      tenant_owner: { ar: 'مدير النظام', en: 'System Admin' },
+      tenant_manager: { ar: 'مدير الصيدلية', en: 'Pharmacy Manager' },
     };
     const resolvedRole = roleMap[primaryRole] || { ar: primaryRole, en: primaryRole };
 

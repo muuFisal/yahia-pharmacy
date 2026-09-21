@@ -24,13 +24,14 @@ export const DashboardSidebar: React.FC = () => {
       {/* Brand Header */}
       <div className="h-16 flex items-center justify-between px-4 border-b border-outline-variant/10">
         <Link to="/admin/dashboard" className="flex items-center gap-2 min-w-0">
-          {settings?.logo ? (
-            <img src={settings.logo} alt={brandName} className="h-8 w-auto object-contain shrink-0" />
-          ) : (
-            <div className="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined text-[18px]">deployed_code</span>
-            </div>
-          )}
+          <img
+            src={settings?.logo || '/logo-icon.png'}
+            alt={brandName}
+            className="h-8 w-auto object-contain shrink-0"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/logo-icon.png';
+            }}
+          />
           {!isCollapsed && (
             <span className="font-bold text-on-surface truncate text-base">
               {brandName}

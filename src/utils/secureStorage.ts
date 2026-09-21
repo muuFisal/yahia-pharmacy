@@ -15,7 +15,7 @@ import CryptoJS from 'crypto-js';
  * can still extract it.  For true token security, prefer HttpOnly cookies.
  */
 
-const SECRET_KEY = import.meta.env.VITE_STORAGE_SECRET || 'bookhub-2026-aes-key';
+const SECRET_KEY = (import.meta.env.VITE_STORAGE_SECRET as string) || 'yahia-pharmacy-aes-key';
 
 export const secureStorage = {
   /**

@@ -1,12 +1,4 @@
 import { createContext } from 'react';
-import type {
-  AuthUser,
-  LoginRequest,
-  RegisterRequest,
-  RegisterResponse,
-  VerifyOtpRequest,
-  VerifyOtpResponse,
-} from '../types/api';
 import { DESIGN_TOKENS } from '../styles/tokens';
 
 export interface StorefrontSettings {
@@ -92,16 +84,3 @@ export interface BrandingContextType {
   settings: StorefrontSettings | null;
 }
 export const BrandingContext = createContext<BrandingContextType | undefined>(undefined);
-
-// --- Auth Context ---
-export interface AuthContextType {
-  user: AuthUser | null;
-  isAuthenticated: boolean;
-  isAuthLoading: boolean;
-  login: (credentials: LoginRequest) => Promise<void>;
-  register: (payload: RegisterRequest) => Promise<RegisterResponse>;
-  verifyOtp: (payload: VerifyOtpRequest) => Promise<VerifyOtpResponse>;
-  logout: () => Promise<void>;
-  refreshUser: () => Promise<void>;
-}
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);

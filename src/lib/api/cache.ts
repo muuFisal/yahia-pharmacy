@@ -5,15 +5,9 @@ export const CACHE_RESOURCES = {
   SETTINGS: 'storefront-settings',
   BANNERS: 'banners',
   CATEGORIES: 'categories',
-  STAGES: 'academic-stages',
-  GRADES: 'academic-grades',
-  SECTIONS: 'academic-sections',
-  BRANCHES: 'academic-branches',
   CMS: 'cms-page',
-  // Deduplication-only resources (NO TTL storage in v1)
   PRODUCTS: 'products',
   PRODUCT_DETAILS: 'product-details',
-  TEACHERS: 'teachers',
 } as const;
 
 export type CacheResource = typeof CACHE_RESOURCES[keyof typeof CACHE_RESOURCES] | string;
@@ -23,7 +17,6 @@ export interface CacheEntry<T = unknown> {
   createdAt: number;
   ttlMs: number;
   lastAccessed: number;
-  tenantId: string;
   resource: string;
 }
 
@@ -33,7 +26,6 @@ export interface GetOrFetchOptions<T> {
   ttlMs?: number;
   params?: Record<string, unknown> | unknown[];
   lang?: string;
-  tenantId?: string;
   signal?: AbortSignal;
   deduplicateOnly?: boolean;
 }
@@ -70,50 +62,22 @@ class ApiCache {
 
   private maxEntries = 100;
   private maxPending = 50;
-  private activeTenantId: string | null = null;
   private cacheGeneration = 0;
 
   /**
-   * Set verified tenant ID (returned by /storefront/settings)
-   */
-  public setActiveTenantId(tenantId: string): void {
-    const trimmed = tenantId ? tenantId.trim() : '';
-    if (!trimmed) return;
-    if (this.activeTenantId && this.activeTenantId !== trimmed) {
-      this.clear();
-    }
-    this.activeTenantId = trimmed;
-  }
-
-  /**
-   * Get verified active tenant ID. Returns null if missing/unverified.
-   */
-  public getTenantId(overrideTenantId?: string): string | null {
-    const id = overrideTenantId || this.activeTenantId;
-    if (!id || typeof id !== 'string' || id.trim() === '') {
-      return null;
-    }
-    return id.trim();
-  }
-
-  /**
    * Constructs standardized cache key:
-   * v1|tenant:<verifiedTenantId>|lang:<language>|scope:public|resource:<resource>|params:<normalizedHash>
+   * v1|lang:<language>|scope:public|resource:<resource>|params:<normalizedHash>
    */
   public buildCacheKey(
     resource: string,
     params?: unknown,
     lang?: string,
-    overrideTenantId?: string
-  ): string | null {
-    const verifiedTenantId = this.getTenantId(overrideTenantId);
-    if (!verifiedTenantId) return null; // Missing verified tenant -> bypass cache
-
+  ): string {
     const currentLang = lang || (typeof localStorage !== 'undefined' ? localStorage.getItem('language') : null) || 'ar';
     const normParams = normalizeParams(params);
     const paramsHash = normParams ? hashStringSync(normParams) : 'none';
 
-    return `v1|tenant:${verifiedTenantId}|lang:${currentLang}|scope:public|resource:${resource}|params:${paramsHash}`;
+    return `v1|lang:${currentLang}|scope:public|resource:${resource}|params:${paramsHash}`;
   }
 
   /**
@@ -153,17 +117,12 @@ class ApiCache {
    * Core Cache & Deduplication API
    */
   public async getOrFetch<T>(options: GetOrFetchOptions<T>): Promise<T> {
-    const { resource, fetcher, ttlMs = 0, params, lang, tenantId, signal, deduplicateOnly = false } = options;
-    const cacheKey = this.buildCacheKey(resource, params, lang, tenantId);
-
-    // 1️⃣ Missing Verified Tenant ID -> Bypass cache & deduplication entirely
-    if (!cacheKey) {
-      return fetcher(signal);
-    }
+    const { resource, fetcher, ttlMs = 0, params, lang, signal, deduplicateOnly = false } = options;
+    const cacheKey = this.buildCacheKey(resource, params, lang);
 
     this.cleanupExpired();
 
-    // 2️⃣ Check TTL Cache Memory (unless deduplicateOnly)
+    // 1️⃣ Check TTL Cache Memory (unless deduplicateOnly)
     if (!deduplicateOnly && ttlMs > 0) {
       const existing = this.cache.get(cacheKey);
       if (existing) {
@@ -177,7 +136,7 @@ class ApiCache {
       }
     }
 
-    // 3️⃣ In-Flight Deduplication Check
+    // 2️⃣ In-Flight Deduplication Check
     if (this.pendingRequests.has(cacheKey)) {
       const sharedPromise = this.pendingRequests.get(cacheKey) as Promise<T>;
       if (!signal) {
@@ -209,7 +168,7 @@ class ApiCache {
       });
     }
 
-    // 4️⃣ Check Max Pending Limits
+    // 3️⃣ Check Max Pending Limits
     if (this.pendingRequests.size >= this.maxPending) {
       if (process.env.NODE_ENV === 'development') {
         console.warn(`[ApiCache] Pending request limit (${this.maxPending}) reached. Executing un-deduplicated request.`);
@@ -217,9 +176,8 @@ class ApiCache {
       return fetcher(signal);
     }
 
-    // 5️⃣ Execute Shared Fetcher with internal AbortController
+    // 4️⃣ Execute Shared Fetcher with internal AbortController
     const startGeneration = this.cacheGeneration;
-    const startTenantId = this.getTenantId(tenantId);
     const internalController = new AbortController();
     this.internalControllers.set(cacheKey, internalController);
 
@@ -227,13 +185,12 @@ class ApiCache {
       try {
         const result = await fetcher(internalController.signal);
 
-        // Version & Tenant Guards: Ensure clear() or tenant switch did not occur during fetch
+        // Version Guard: Ensure clear() did not occur during fetch
         const isSameGen = this.cacheGeneration === startGeneration;
-        const isSameTenant = this.getTenantId(tenantId) === startTenantId;
         const isCurrentPending = this.internalControllers.get(cacheKey) === internalController;
 
-        if (!isSameGen || !isSameTenant || !isCurrentPending) {
-          throw new Error('CanceledError: Request invalidated because tenant or cache generation changed');
+        if (!isSameGen || !isCurrentPending) {
+          throw new Error('CanceledError: Request invalidated because cache generation changed');
         }
 
         if (!deduplicateOnly && ttlMs > 0) {
@@ -242,7 +199,6 @@ class ApiCache {
             createdAt: Date.now(),
             ttlMs,
             lastAccessed: Date.now(),
-            tenantId: startTenantId!,
             resource,
           });
           this.enforceCapacity();
@@ -296,41 +252,22 @@ class ApiCache {
   }
 
   /**
-   * Invalidate resource for a specific tenant (defaults to active tenant).
-   * Fails safely and does nothing if tenant identity is missing.
+   * Invalidate resource
    */
-  public invalidateResource(resource: string, overrideTenantId?: string): void {
-    const targetTenantId = this.getTenantId(overrideTenantId);
-    if (!targetTenantId) return; // Fail safely: missing tenant identity invalidates nothing
-
-    for (const [key, entry] of this.cache.entries()) {
-      if (entry.resource === resource && entry.tenantId === targetTenantId) {
-        this.cache.delete(key);
-      }
-    }
-  }
-
-  /**
-   * Invalidate resource prefix for a specific tenant (defaults to active tenant).
-   * Fails safely and does nothing if tenant identity is missing.
-   */
-  public invalidateResourcePrefix(prefix: string, overrideTenantId?: string): void {
-    const targetTenantId = this.getTenantId(overrideTenantId);
-    if (!targetTenantId) return; // Fail safely: missing tenant identity invalidates nothing
-
-    for (const [key, entry] of this.cache.entries()) {
-      if (entry.resource.startsWith(prefix) && entry.tenantId === targetTenantId) {
-        this.cache.delete(key);
-      }
-    }
-  }
-
-  /**
-   * Explicit global invalidation across all tenants (ADMIN/TEST USE ONLY).
-   */
-  public invalidateResourceForAllTenants(resource: string): void {
+  public invalidateResource(resource: string): void {
     for (const [key, entry] of this.cache.entries()) {
       if (entry.resource === resource) {
+        this.cache.delete(key);
+      }
+    }
+  }
+
+  /**
+   * Invalidate resource prefix
+   */
+  public invalidateResourcePrefix(prefix: string): void {
+    for (const [key, entry] of this.cache.entries()) {
+      if (entry.resource.startsWith(prefix)) {
         this.cache.delete(key);
       }
     }

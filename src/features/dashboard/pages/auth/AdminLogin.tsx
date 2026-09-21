@@ -65,14 +65,15 @@ export const AdminLogin: React.FC = () => {
       {/* Main Login Card */}
       <Card className="w-full max-w-md p-8 shadow-2xl border border-outline-variant/10 bg-surface/90 dark:bg-slate-900/90 backdrop-blur-xl relative z-10 animate-fade-in-up">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-primary text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/25">
-            {settings?.logo ? (
-              <img src={settings.logo} alt={brandName} className="w-9 h-9 object-contain" />
-            ) : (
-              <span className="material-symbols-outlined text-[30px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                admin_panel_settings
-              </span>
-            )}
+          <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 p-2 border border-outline-variant/20 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/15">
+            <img
+              src={settings?.logo || '/logo-icon.png'}
+              alt={brandName}
+              className="w-12 h-12 object-contain"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/logo-icon.png';
+              }}
+            />
           </div>
           <h1 className="text-2xl font-bold font-primary text-on-surface mb-2">
             {t('dashboard:login.title', 'تسجيل دخول الإدارة')}

@@ -46,7 +46,7 @@ export const DashboardAuthService = {
             name: 'أحمد السعدني (مدير النظام)',
             email: credentials.email || 'admin@example.com',
             phone: '01012345678',
-            roles: ['tenant_owner'],
+            roles: ['admin'],
             permissions: [
               'dashboard.view',
               'analytics.view',

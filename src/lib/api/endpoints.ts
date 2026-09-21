@@ -12,38 +12,6 @@
 import { DASHBOARD_API_ENDPOINTS } from './dashboard.endpoints';
 
 export const API_ENDPOINTS = {
-  // ── Authentication (Sanctum) ─────────────────────────────────
-  AUTH: {
-    /** POST — Get Sanctum CSRF cookie (required before login) */
-    CSRF: '/sanctum/csrf-cookie',
-    /** POST — Login with email & password */
-    LOGIN: '/v1/auth/login',
-    /** POST — Register a new user */
-    REGISTER: '/v1/auth/register',
-    /** POST — Verify OTP code */
-    VERIFY_OTP: '/v1/auth/verify-otp',
-    /** POST — Resend verification OTP code */
-    RESEND_OTP: '/v1/auth/resend-otp',
-    /** POST — Logout (revoke current token) */
-    LOGOUT: '/v1/auth/logout',
-    /** GET  — Get the authenticated user's profile */
-    ME: '/v1/auth/me',
-    /** POST — Request a password reset link by phone */
-    FORGOT_PASSWORD: '/v1/auth/forgot/password',
-    /** POST — Verify forgot password OTP */
-    FORGOT_VERIFY_OTP: '/v1/auth/forgot/verify-otp',
-    /** POST — Resend forgot password OTP */
-    FORGOT_RESEND_OTP: '/v1/auth/forgot/resend-otp',
-    /** POST — Reset password */
-    RESET_PASSWORD: '/v1/auth/forgot/reset-password',
-    /** POST — Upload profile avatar */
-    ME_AVATAR: '/v1/auth/me/avatar',
-    /** PUT  — Change password */
-    CHANGE_PASSWORD: '/v1/auth/change-password',
-    /** GET  — Get profile statistics */
-    STATISTICS: '/v1/auth/statistics',
-  },
-
   // ── Locations ────────────────────────────────────────────────
   LOCATION: {
     /** GET — List active countries with their governorates */
@@ -168,7 +136,7 @@ export const API_ENDPOINTS = {
   // ── Dashboard Authentication ─────────────────────────────────
   DASHBOARD_AUTH: DASHBOARD_API_ENDPOINTS,
 
-  // ── Storefront / Tenant Settings ─────────────────────────────
+  // ── Storefront Settings ──────────────────────────────────────
   STOREFRONT: {
     /** GET — Get storefront settings (branding, colors, etc.) */
     SETTINGS: '/v1/storefront/settings',
