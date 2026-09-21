@@ -13,17 +13,17 @@ export const Badge: React.FC<BadgeProps> = ({
   ...props
 }) => {
   const styles = {
-    primary: 'bg-primary-fixed text-on-primary-fixed',
-    secondary: 'bg-secondary-container text-on-secondary-container',
-    error: 'bg-error/10 text-error',
-    success: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
-    surface: 'bg-surface-container-high text-on-surface-variant'
+    primary: 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary border border-primary/20',
+    secondary: 'bg-secondary/10 text-secondary dark:bg-secondary/20 dark:text-secondary border border-secondary/20',
+    error: 'bg-error/10 text-error dark:bg-error/20 dark:text-error border border-error/20',
+    success: 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary border border-primary/20',
+    surface: 'bg-surface-variant text-on-surface-variant border border-outline-variant/30',
   };
 
   return (
     <span
       className={cn(
-        'inline-flex items-center px-3 py-1 rounded-full font-label-md text-caption font-semibold shadow-sm',
+        'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold shadow-sm',
         styles[variant],
         className
       )}
@@ -33,4 +33,5 @@ export const Badge: React.FC<BadgeProps> = ({
     </span>
   );
 };
+
 export default Badge;

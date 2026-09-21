@@ -55,30 +55,25 @@ export const LoadingScreen: React.FC = () => {
         <div className="absolute w-40 h-40 rounded-full border-r-2 border-l-2 border-primary dark:border-primary-container animate-orbit-ccw"></div>
 
         {/* Center Logo Box */}
-        <div className="absolute w-28 h-28 bg-white dark:bg-slate-900 rounded-3xl flex flex-col items-center justify-center shadow-2xl shadow-primary/20 border border-primary/10 animate-pulse-glowing">
-          {settings?.logo ? (
-            <img
-              src={settings.logo}
-              alt={brandName}
-              className="w-20 h-20 object-contain p-1 rounded-2xl"
-            />
-          ) : (
-            <div className="w-14 h-14 bg-gradient-to-tr from-primary to-primary/80 rounded-2xl flex items-center justify-center shadow-lg shadow-primary/35">
-              <span className="material-symbols-outlined text-white text-[36px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                school
-              </span>
-            </div>
-          )}
+        <div className="absolute w-28 h-28 bg-white dark:bg-slate-900 rounded-3xl flex flex-col items-center justify-center shadow-2xl shadow-primary/20 border border-primary/10 animate-pulse-glowing p-2">
+          <img
+            src={settings?.logo || '/logo-icon.png'}
+            alt={brandName}
+            className="w-20 h-20 object-contain"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/logo-icon.png';
+            }}
+          />
         </div>
       </div>
 
       {/* Brand Title and Subtitle */}
       <div className="mt-6 text-center flex flex-col gap-2">
-        <h2 className="text-headline-md font-display font-bold text-on-surface tracking-wide">
+        <h2 className="text-headline-md font-display font-bold text-on-surface tracking-wide font-primary">
           {brandName}
         </h2>
         <p className="text-sm font-medium text-primary dark:text-primary-container animate-pulse-text">
-          {language === 'ar' ? 'جاري تحميل المنصة الذكية...' : 'Loading the smart platform...'}
+          {language === 'ar' ? 'صيدلية يحيى .. جاري تحضير الخدمات...' : 'Yahia Pharmacy .. Preparing healthcare services...'}
         </p>
       </div>
 
